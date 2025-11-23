@@ -28,19 +28,7 @@
     <a href="{% url 'plants:plants_view' %}" class="plants_more_link">More →</a>
   </div>
 
-  <div class="plants_grid">
-    {% for plant in plants %}
-    <div class="plant_card">
-      <a href="{% url 'plants:plant_details_view' plant.id %}" class="plant_card_link">
-        <img src="{{ plant.image.url }}" alt="{{ plant.name }}" class="plant_image" />
-        <div class="plant_info">
-          <h4 class="plant_name">{{ plant.name }}</h4>
-          <p class="plant_about">{{ plant.about|truncatewords:5 }}</p>
-          <p class="plant_category">{{plant.get_category_display}}</p>
-        </div>
-      </a>
-    </div>
-    {% endfor %}
-  </div>
+  <!-- Include Plant Grid -->
+  {% include "plants/_plant_grid.html" with plants=plants %}
 </section>
 {% endblock %}

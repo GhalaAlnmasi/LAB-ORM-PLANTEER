@@ -23,10 +23,20 @@
       <p class="plant_about">{{ plant.about }}</p>
 
       <h3 class="section_title">Native to:</h3>
-      <p class="plant_native_to">{{ plant.native_to }}</p>
+      <p class="plant_native_to">
+        {% if plant.native_countries.all %}
+          {% for country in plant.native_countries.all %}
+            <a class="inline-block hover:opacity-80 transition" href="/plants/all/?category=&is_edible=&native_countries={{ country.id }}" title="{{ country.name }}">
+              <img src="/media/{{country.flag}}" alt="{{country.name}}" class="w-6 h-4 object-cover rounded-sm inline-block">
+            </a>
+          {% endfor %}
+        {% else %}
+          No country native yet
+        {% endif %}
+      </p>
 
       <h3 class="section_title">Is Edible:</h3>
-      <p class="plant_native_to">{{ plant.is_edible }}</p>
+      <p class="plant_is_edible">{{ plant.is_edible }}</p>
 
       <h3 class="section_title">Used For</h3>
       <p class="plant_used_for">{{ plant.used_for }}</p>
@@ -37,9 +47,9 @@
       </div>
       <div id="commentFormContainer" class="comment_form_container hidden">
         <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="comment_form_button">Submit</button>
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit" class="comment_form_button">Submit</button>
         </form>
       </div>
 

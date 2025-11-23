@@ -457,12 +457,14 @@ main {
   @apply bg-red-100 text-red-800;
 }
 
+/* Container */
 .plants_filter_container {
   @apply max-w-7xl mx-auto px-6 mt-20 mb-20;
 }
-/* Filter Button */
+
+/* Filter Toggle */
 .filter_toggle_container {
-  @apply flex items-center gap-4;
+  @apply flex items-center gap-4 justify-between;
 }
 
 .filter_toggle_container span {
@@ -471,24 +473,37 @@ main {
 
 /* Filter Form */
 .filter_form {
-  @apply flex flex-col items-center ;
+  @apply flex flex-col items-start gap-6 w-full bg-white p-6 rounded-lg shadow-md;
 }
 
+/* Group (Label + Input) */
 .filter_group {
-  @apply flex flex-col items-center;
+  @apply flex flex-col md:flex-row md:items-center w-full gap-2;
 }
 
 .filter_group label {
-  @apply mb-2 text-lg text-gray-700;
+  @apply text-lg text-gray-700 min-w-[120px];
 }
 
+/* Select Inputs */
 .filter_select {
-  @apply p-2 border border-gray-300 rounded-md;
+  @apply appearance-none pr-10 pl-3 py-2 border border-gray-300 rounded-md w-full md:w-auto;
 }
 
-.filter_button {
-  @apply  ml-7 mt-4 px-6 py-3 bg-black text-white font-semibold rounded hover:bg-green-700 transition duration-300;
+/* Checkbox Grid for Countries */
+.filter_group.checkbox_group {
+  @apply grid grid-cols-2 md:grid-cols-4 gap-2 max-h-72 overflow-y-auto;
 }
+
+.filter_group.checkbox_group label {
+  @apply flex items-center gap-2 bg-gray-100 p-2 rounded hover:bg-green-50 cursor-pointer;
+}
+
+/* Filter Button */
+.filter_button {
+  @apply mt-4 px-6 py-3 bg-black text-white font-semibold rounded hover:bg-green-700 transition duration-300;
+}
+
 
 /* Related Plants Section */
 .related_plants_section {

@@ -1,12 +1,13 @@
 from django.contrib import admin
-from .models import Plant
+from .models import Plant,Country
 # Register your models here.
 
+@admin.register(Country)
+class CountryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'flag')
 
 class PlantsAdmin(admin.ModelAdmin):
-  list_display = ('name', 'about', 'native_to', 'used_for', 'category', 'is_edible')
-  list_filter = ('category','is_edible', )
-  list_editable = ('category',)
-  
+    list_display = ('name',)
+    filter_horizontal = ('native_countries',)  # makes selection easier
 
 admin.site.register(Plant, PlantsAdmin)

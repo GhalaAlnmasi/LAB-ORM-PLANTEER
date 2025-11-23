@@ -11,24 +11,13 @@
     <button type="submit" class="search_button">Search</button>
   </form>
 
+  <!-- Include Filter Form -->
+  {% include "plants/_filter_form.html" with categories=categories countries=countries selected_countries=selected_countries hidden=False %}
+
   <h1 class="search_results_title">Search Results</h1>
 
-  <div class="plants_grid">
-    {% for plant in plants %}
-    <div class="plant_card">
-      <a href="{% url 'plants:plant_details_view' plant.id %}" class="plant_card_link">
-        <img src="{{ plant.image.url }}" alt="{{ plant.name }}" class="plant_image" />
-        <div class="plant_info">
-          <h4 class="plant_name">{{ plant.name }}</h4>
-          <p class="plant_about">{{ plant.about|truncatewords:5 }}</p>
-          <p class="plant_category">{{ plant.get_category_display }}</p>
-        </div>
-      </a>
-    </div>
-    {% empty %}
-    <p>No plants found for your search.</p>
-    {% endfor %}
-  </div>
+  <!-- Include Plant Grid -->
+  {% include "plants/_plant_grid.html" with plants=plants %}
 
   <div class="back_button_container">
     <a href="{% url 'plants:plants_view' %}" class="back_button">Back to All Plants</a>

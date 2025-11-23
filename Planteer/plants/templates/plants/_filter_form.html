@@ -1,0 +1,65 @@
+<!-- Filter Icon and Toggle Button -->
+<div class="filter_toggle_container">
+  <span id="filter-icon" class="material-icons cursor-pointer" onclick="toggleFilters()">
+    filter_list
+  </span>
+  <span id="filter-icon-off" class="material-icons cursor-pointer hidden" onclick="clearFilters()">
+    filter_list_off
+  </span>
+</div>
+</div>
+
+<!-- Filter Form (Hidden by default) -->
+<div id="filter-form" class="filter_form hidden">
+<form method="get" class="w-full">
+  <div class="filter_group mb-4">
+    <label for="category">Category:</label>
+    <div class="relative">
+      <select name="category" id="category" class="filter_select">
+          <option>All Categories</option>
+          {% for cat, label in categories %}
+          <option value="{{ cat }}" {% if request.GET.category == cat %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+      </select>
+  
+      <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"
+           fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M19 9l-7 7-7-7" />
+      </svg>
+  </div>
+  
+  </div>
+
+  <div class="filter_group mb-4">
+    <label for="is_edible">Is Edible:</label>
+    <div class="relative">
+      <select name="is_edible" id="is_edible" class="filter_select">
+        <option value="">All Plants</option>
+        <option value="true" {% if request.GET.is_edible == 'true' %}selected{% endif %}>Yes</option>
+        <option value="false" {% if request.GET.is_edible == 'false' %}selected{% endif %}>No</option>
+      </select>
+
+      <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"
+           fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M19 9l-7 7-7-7" />
+      </svg>
+    </div>
+  </div>
+
+  <div class="filter_group flex flex-wrap mb-4">
+    <label>Countries:</label>
+  
+    {% for country in countries %}
+      <label class="flex items-center gap-2">
+        <input type="checkbox" name="native_countries" value="{{ country.id }}"
+          {% if country.id|stringformat:"s" in selected_countries %}checked{% endif %}>
+        {{ country.name }}
+      </label>
+    {% endfor %}
+  </div>
+
+  <button type="submit" class="filter_button">Apply Filters</button>
+</form>
+</div>

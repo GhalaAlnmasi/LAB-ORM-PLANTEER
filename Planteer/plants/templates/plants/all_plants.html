@@ -9,60 +9,11 @@
   <div class="plants_header">
     <h1 class="plants_title">All Plants</h1>
 
-    <!-- Filter Icon and Toggle Button -->
-    <div class="filter_toggle_container">
-      <span id="filter-icon" class="material-icons cursor-pointer" onclick="toggleFilters()">
-        filter_list
-      </span>
-      <span id="filter-icon-off" class="material-icons cursor-pointer hidden" onclick="clearFilters()">
-        filter_list_off
-      </span>
-    </div>
-  </div>
-
-  <!-- Filter Form (Hidden by default) -->
-  <div id="filter-form" class="filter_form hidden">
-    <form method="get">
-      <div class="filter_group">
-        <label for="category">Category:</label>
-        <select name="category" id="category" class="filter_select">
-          <option value="">All Categories</option>
-          {% for cat, label in categories %}
-          <option value="{{ cat }}" {% if request.GET.category == cat %}selected{% endif %}>{{ label }}</option>
-          {% endfor %}
-        </select>
-      </div>
-
-      <div class="filter_group">
-        <label for="is_edible">Is Edible:</label>
-        <select name="is_edible" id="is_edible" class="filter_select">
-          <option value="">All Plants</option>
-          <option value="true" {% if request.GET.is_edible == 'true' %}selected{% endif %}>Yes</option>
-          <option value="false" {% if request.GET.is_edible == 'false' %}selected{% endif %}>No</option>
-        </select>
-      </div>
-
-      <button type="submit" class="filter_button">Apply Filters</button>
-    </form>
-  </div>
-
-  <!-- Plant Grid -->
-  <div class="plants_grid">
-    {% for plant in plants %}
-    <div class="plant_card">
-      <a href="{% url 'plants:plant_details_view' plant.id %}" class="plant_card_link">
-        <img src="{{ plant.image.url }}" alt="{{ plant.name }}" class="plant_image" />
-        <div class="plant_info">
-          <h4 class="plant_name">{{ plant.name }}</h4>
-          <p class="plant_about">{{ plant.about|truncatewords:5 }}</p>
-          <p class="plant_category">{{ plant.get_category_display }}</p>
-        </div>
-      </a>
-    </div>
-    {% empty %}
-    <p>No plants found matching your filters.</p>
-    {% endfor %}
-  </div>
+    <!-- Include Filter Form -->
+  {% include "plants/_filter_form.html" with categories=categories countries=countries selected_countries=selected_countries hidden=False %}
+  
+  <!-- Include Plant Grid -->
+  {% include "plants/_plant_grid.html" with plants=plants %}
 
   <div class="back_button_container">
     <a href="{% url 'plants:plants_view' %}" class="back_button">Back to All Plants</a>

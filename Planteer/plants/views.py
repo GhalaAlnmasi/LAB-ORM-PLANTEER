@@ -3,27 +3,21 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.db.models import Q
-from .models import Plant,  Comment
+from django.db.models import Count
+from .models import Plant, Country
 from .forms import PlantForm,CommentForm
 
 # Create your views here.
 
 # All Plants
 def plants_view(request:HttpRequest):
-  # If no filters are applied, show all plants
-  plants = Plant.objects.all().order_by('-created_at')
-  # Filter by category if provided
-  category = request.GET.get('category')
-  if category:
-      plants = plants.filter(category=category)
+  # Get all plants
+  plants_qs = Plant.objects.all().order_by('-created_at')
 
-  # Filter by edibility if provided
-  is_edible = request.GET.get('is_edible')
-  if is_edible:
-      plants = plants.filter(is_edible=is_edible.lower() == 'true')
-
-  categories = Plant.Category.choices  # Get all category choices for the dropdown
-  return render(request, 'plants/all_plants.html', {'plants': plants, 'categories': categories})
+  # Apply filters
+  context = filter_plants(request, queryset=plants_qs)
+  
+  return render(request, 'plants/all_plants.html', context)
 
 # Add New Plants
 def add_plant_view(request:HttpRequest):
@@ -88,16 +82,58 @@ def delete_plant(request:HttpRequest, plant_id):
 def search_view(request:HttpRequest):
   query = request.GET.get('q', '').strip()
   if query:
-      plants = Plant.objects.filter(
+      plants_qs = Plant.objects.filter(
           Q(name__icontains=query) | Q(about__icontains=query)
       )
       search_mode = True
   else:
-      plants = Plant.objects.all()
+      plants_qs = Plant.objects.all()
       search_mode = False
-
-  return render(request, 'plants/search_plant.html', {
-      'plants': plants,
+  
+  context = filter_plants(request, queryset=plants_qs)
+  context.update({
       'query': query,
       'search_mode': search_mode
   })
+
+  return render(request, 'plants/search_plant.html', context)
+
+def filter_plants(request, queryset=None):
+  """
+  Returns filtered plants based on GET parameters:
+  - category
+  - is_edible
+  - native_countries (multiple)
+  """
+
+  if queryset is None:
+      queryset = Plant.objects.all()
+
+  # Apply category filter
+  category = request.GET.get('category')
+  if category:
+      queryset = queryset.filter(category=category)
+
+  # Apply edibility filter
+  is_edible = request.GET.get('is_edible')
+  if is_edible:
+      queryset = queryset.filter(is_edible=is_edible.lower() == 'true')
+
+  # Apply countries filter
+  country_ids = request.GET.getlist('native_countries')
+  if country_ids:
+      queryset = queryset.filter(native_countries__id__in=country_ids)\
+                          .annotate(num_countries=Count('native_countries'))\
+                          .filter(num_countries=len(country_ids))
+
+  # Prepare context data
+  categories = Plant.Category.choices
+  countries = Country.objects.all()
+  selected_countries = country_ids
+
+  return {
+      'plants': queryset,
+      'categories': categories,
+      'countries': countries,
+      'selected_countries': selected_countries
+  }
