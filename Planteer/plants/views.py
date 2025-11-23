@@ -3,8 +3,8 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.db.models import Q
-from .models import Plant
-from .forms import PlantForm
+from .models import Plant,  Comment
+from .forms import PlantForm,CommentForm
 
 # Create your views here.
 
@@ -43,10 +43,22 @@ def add_plant_view(request:HttpRequest):
 # Plants Details
 def plant_details_view(request:HttpRequest, plant_id):
   plant = get_object_or_404(Plant, id=plant_id)
+  comments = plant.comments.all().order_by('-created_at')
+
+  if request.method == "POST":
+      form = CommentForm(request.POST)
+      if form.is_valid():
+          comment = form.save(commit=False)
+          comment.plant = plant
+          comment.save()
+          messages.success(request, "Your comment was added.")
+          return redirect("plants:plant_details_view", plant_id=plant.id)
+  else:
+      form = CommentForm()
 
   # Get related plants based on the same category
   related_plants = Plant.objects.filter(category=plant.category).exclude(id=plant.id)[:4]  # Limit to 4 related plants
-  return render(request, 'plants/plant_details.html', {'plant': plant, 'related_plants': related_plants})
+  return render(request, 'plants/plant_details.html', {'plant': plant, 'related_plants': related_plants, 'comments': comments,'form': form})
 
 # Update Plants
 def update_plant_view(request:HttpRequest, plant_id):

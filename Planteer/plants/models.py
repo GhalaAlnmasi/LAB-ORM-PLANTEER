@@ -23,3 +23,20 @@ class Plant(models.Model):
   category =models.CharField(max_length=50, choices=Category.choices)
   is_edible = models.BooleanField(default=False)
   created_at = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self) -> str:
+    return f"{self.name} from {self.category}"
+  
+
+class Comment(models.Model):
+    plant = models.ForeignKey(
+        Plant,
+        on_delete=models.CASCADE,
+        related_name="comments"
+    )
+    name = models.CharField(max_length=100)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Comment by {self.name} on {self.plant.name}"

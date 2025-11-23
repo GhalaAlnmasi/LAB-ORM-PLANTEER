@@ -69,26 +69,3 @@
   </div>
 </div>
 {% endblock %}
-
-{% block extra_script %}
-<script>
-  // Toggle the visibility of the filter form and icons
-  function toggleFilters() {
-    const filterForm = document.getElementById('filter-form');
-    const filterIcon = document.getElementById('filter-icon');
-    const filterIconOff = document.getElementById('filter-icon-off');
-
-    filterForm.classList.toggle('hidden'); // Toggle visibility of the filter form
-    filterIcon.classList.toggle('hidden'); // Toggle visibility of the filter icon
-    filterIconOff.classList.toggle('hidden'); // Toggle visibility of the 'clear' filter icon
-  }
-
-  // Clear filters and reset query params, then reload the page
-  function clearFilters() {
-    const url = new URL(window.location.href);
-    url.searchParams.delete('category');
-    url.searchParams.delete('is_edible');
-    window.location.href = url.toString(); // Redirect to the same page with cleared filters
-  }
-</script>
-{% endblock %}

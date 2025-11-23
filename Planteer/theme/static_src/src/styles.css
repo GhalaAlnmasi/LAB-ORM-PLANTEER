@@ -303,6 +303,10 @@ main {
   @apply inline-block py-2 px-6 bg-black text-white rounded hover:bg-green-700 transition duration-300;
 }
 
+.add_comment_btn {
+  @apply bg-green-700 text-white px-4 py-2 rounded-lg hover:bg-green-800 transition font-semibold;
+}
+
 
 .back_button_container {
   @apply text-center mt-8;
@@ -310,6 +314,38 @@ main {
 
 .back_button {
   @apply inline-block py-2 px-6 bg-gray-800 text-white rounded hover:bg-gray-600 transition duration-300;
+}
+
+.comment_box {
+  @apply bg-white shadow-md rounded-lg p-4 my-4 border border-gray-200;
+}
+
+.comment_author {
+  @apply font-semibold text-gray-900;
+}
+
+.comment_date {
+  @apply text-sm text-gray-500;
+}
+
+.comment_content {
+  @apply text-gray-700 mt-1;
+}
+
+.comment_form_container {
+  @apply bg-white p-5 shadow-lg rounded-xl border border-gray-200 mt-6;
+}
+
+.comment_form_label {
+  @apply block mb-1 font-semibold text-gray-800;
+}
+
+.comment_form_input {
+  @apply w-full p-2 border rounded-lg border-gray-300 focus:ring-2 focus:ring-green-600 focus:outline-none;
+}
+
+.comment_form_button {
+  @apply bg-green-700 text-white px-5 py-2 rounded-lg hover:bg-green-800 transition font-semibold mt-4;
 }
 
 /* Search Results */
