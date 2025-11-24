@@ -46,7 +46,7 @@
         <a href="{% url 'plants:update_plant_view' plant.id %}" class="edit_button">Edit Plant</a>
       </div>
       <div id="commentFormContainer" class="comment_form_container hidden">
-        <form method="POST">
+        <form method="POST" class="comment_form_container">
           {% csrf_token %}
           {{ form.as_p }}
           <button type="submit" class="comment_form_button">Submit</button>

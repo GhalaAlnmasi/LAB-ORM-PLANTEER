@@ -348,6 +348,12 @@ main {
   @apply bg-green-700 text-white px-5 py-2 rounded-lg hover:bg-green-800 transition font-semibold mt-4;
 }
 
+.comment_form_container input,
+.comment_form_container textarea {
+  @apply border border-gray-300 rounded-md px-4 py-2 p-3 w-full focus:outline-none focus:ring-2 focus:ring-green-600;
+
+}
+
 /* Search Results */
 .search_results_container {
   @apply max-w-7xl mx-auto px-6 mt-12;
