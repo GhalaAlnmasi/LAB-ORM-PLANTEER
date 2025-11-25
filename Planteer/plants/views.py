@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
-from django.db.models import Q
-from django.db.models import Count
+from django.core.paginator import Paginator
+from django.db.models import Count, Q, F
 from .models import Plant, Country
 from .forms import PlantForm,CommentForm
 
@@ -16,6 +16,17 @@ def plants_view(request:HttpRequest):
 
   # Apply filters
   context = filter_plants(request, queryset=plants_qs)
+
+  # Get the filtered queryset from your context
+  filtered_plants = context.get("plants")
+
+  # --- Add Pagination Here ---
+  paginator = Paginator(filtered_plants, 9)  # show 12 plants per page
+  page_number = request.GET.get("page")
+  page_obj = paginator.get_page(page_number)  # handles invalid page numbers safely
+
+  # Add paginated data to context
+  context["page_obj"] = page_obj
   
   return render(request, 'plants/all_plants.html', context)
 
@@ -79,61 +90,58 @@ def delete_plant(request:HttpRequest, plant_id):
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
 # Search In Plants
-def search_view(request:HttpRequest):
-  query = request.GET.get('q', '').strip()
-  if query:
-      plants_qs = Plant.objects.filter(
-          Q(name__icontains=query) | Q(about__icontains=query)
-      )
-      search_mode = True
-  else:
-      plants_qs = Plant.objects.all()
-      search_mode = False
-  
-  context = filter_plants(request, queryset=plants_qs)
-  context.update({
-      'query': query,
-      'search_mode': search_mode
-  })
+def search_view(request: HttpRequest):
+    query = request.GET.get('q', '').strip()
 
-  return render(request, 'plants/search_plant.html', context)
+    if query:
+        # Use Q for multiple fields (name, about, category)
+        plants_qs = Plant.objects.filter(
+            Q(name__icontains=query) |
+            Q(about__icontains=query) |
+            Q(category__icontains=query)
+        )
+        search_mode = True
+    else:
+        plants_qs = Plant.objects.all()
+        search_mode = False
+
+    # Apply filters and professional annotations
+    context = filter_plants(request, queryset=plants_qs)
+    context.update({'query': query,'search_mode': search_mode})
+
+    return render(request, 'plants/search_plant.html', context)
 
 def filter_plants(request, queryset=None):
-  """
-  Returns filtered plants based on GET parameters:
-  - category
-  - is_edible
-  - native_countries (multiple)
-  """
+    if queryset is None:
+        queryset = Plant.objects.all()
 
-  if queryset is None:
-      queryset = Plant.objects.all()
+    # Category filter
+    category = request.GET.get('category', '').strip()
+    if category:
+        queryset = queryset.filter(category=category)
 
-  # Apply category filter
-  category = request.GET.get('category')
-  if category:
-      queryset = queryset.filter(category=category)
+    # Edibility filter
+    is_edible = request.GET.get('is_edible')
+    if is_edible in ['true', 'false']:
+        queryset = queryset.filter(is_edible=is_edible == 'true')
 
-  # Apply edibility filter
-  is_edible = request.GET.get('is_edible')
-  if is_edible:
-      queryset = queryset.filter(is_edible=is_edible.lower() == 'true')
+    # Countries filter
+    country_ids = request.GET.getlist('native_countries[]')
+    selected_countries = [str(cid) for cid in country_ids]
+    if country_ids:
+        queryset = queryset.filter(native_countries__id__in=country_ids)
+        if len(country_ids) > 1:
+            queryset = queryset.annotate(
+                num_selected=Count('native_countries', filter=Q(native_countries__id__in=country_ids))
+            ).filter(num_selected=len(country_ids))
+        queryset = queryset.distinct()
 
-  # Apply countries filter
-  country_ids = request.GET.getlist('native_countries')
-  if country_ids:
-      queryset = queryset.filter(native_countries__id__in=country_ids)\
-                          .annotate(num_countries=Count('native_countries'))\
-                          .filter(num_countries=len(country_ids))
+    categories = Plant.Category.choices
+    countries = Country.objects.all()
 
-  # Prepare context data
-  categories = Plant.Category.choices
-  countries = Country.objects.all()
-  selected_countries = country_ids
-
-  return {
-      'plants': queryset,
-      'categories': categories,
-      'countries': countries,
-      'selected_countries': selected_countries
-  }
+    return {
+        'plants': queryset,
+        'categories': categories,
+        'countries': countries,
+        'selected_countries': selected_countries
+    }

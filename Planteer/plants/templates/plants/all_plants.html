@@ -5,18 +5,57 @@
 
 {% block content %}
 <div class="plants_filter_container">
-  <!-- Header with Title and Filter Icon -->
+
   <div class="plants_header">
     <h1 class="plants_title">All Plants</h1>
 
-    <!-- Include Filter Form -->
-  {% include "plants/_filter_form.html" with categories=categories countries=countries selected_countries=selected_countries hidden=False %}
-  
-  <!-- Include Plant Grid -->
-  {% include "plants/_plant_grid.html" with plants=plants %}
+    <!-- Filter Form -->
+    {% include "plants/_filter_form.html" with categories=categories countries=countries selected_countries=selected_countries hidden=False %}
 
-  <div class="back_button_container">
-    <a href="{% url 'plants:plants_view' %}" class="back_button">Back to All Plants</a>
+    <!-- Plant Grid using page_obj -->
+    {% include "plants/_plant_grid.html" with plants=page_obj %}
+    
+
+   <!-- Pagination -->
+<div class="pagination-container">
+  <nav class="pagination">
+
+    {% if page_obj.has_previous %}
+      <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1" class="page-btn">« First</a>
+      <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}" class="page-btn">‹ Prev</a>
+    {% else %}
+      <span class="page-btn disabled">« First</span>
+      <span class="page-btn disabled">‹ Prev</span>
+    {% endif %}
+
+    <div class="page-numbers">
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+          <span class="page-number active">{{ num }}</span>
+        {% else %}
+          <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}" class="page-number">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {% if page_obj.has_next %}
+      <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}" class="page-btn">Next ›</a>
+      <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.paginator.num_pages }}" class="page-btn">Last »</a>
+    {% else %}
+      <span class="page-btn disabled">Next ›</span>
+      <span class="page-btn disabled">Last »</span>
+    {% endif %}
+
+  </nav>
+</div>
+
+    
+
+    <div class="back_button_container">
+      <a href="{% url 'plants:plants_view' %}" class="back_button">Back to All Plants</a>
+    </div>
+
   </div>
+
 </div>
 {% endblock %}

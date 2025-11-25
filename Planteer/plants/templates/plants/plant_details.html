@@ -24,9 +24,9 @@
 
       <h3 class="section_title">Native to:</h3>
       <p class="plant_native_to">
-        {% if plant.native_countries.all %}
+        {% if plant.native_countries.exists %}
           {% for country in plant.native_countries.all %}
-            <a class="inline-block hover:opacity-80 transition" href="/plants/all/?category=&is_edible=&native_countries={{ country.id }}" title="{{ country.name }}">
+            <a class="inline-block hover:opacity-80 transition" href="/plants/all/?native_countries[]={{ country.id }}" title="{{ country.name }}">
               <img src="/media/{{country.flag}}" alt="{{country.name}}" class="w-6 h-4 object-cover rounded-sm inline-block">
             </a>
           {% endfor %}

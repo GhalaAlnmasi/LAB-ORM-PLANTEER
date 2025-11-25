@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Message Confirmation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      font-family: Arial, sans-serif;
+    }
+
+    .email-container {
+      max-width: 600px;
+      width: 100%;
+      margin: 30px auto;
+      background: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .header {
+      background: #4CAF50;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .logo {
+      max-height: 50px;
+      width: auto;
+    }
+
+    .content {
+      padding: 25px 20px;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #555;
+      margin: 0 0 15px;
+    }
+
+    .info-box {
+      background: #f7f7f7;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+
+    .info-item {
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    .footer {
+      background: #f0f0f0;
+      padding: 15px;
+      text-align: center;
+      font-size: 13px;
+      color: #777;
+    }
+
+    /* Mobile Responsive */
+    @media screen and (max-width: 480px) {
+      .content {
+        padding: 18px 15px;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
+
+      p,
+      .info-item {
+        font-size: 14px;
+      }
+
+      .header {
+        padding: 15px;
+      }
+
+      .logo {
+        max-height: 40px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="email-container">
+    
+    <!-- Header -->
+    <div class="header">
+      <img src="https://i.postimg.cc/KvTBw6Xq/Planteer.jpg" alt="Logo" class="logo">
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <h1>Thank you, {{ contact.first_name }}!</h1>
+      <p>We have received your message. A member of our team will contact you soon.</p>
+
+      <div class="info-box">
+        <div class="info-item"><strong>Message:</strong> {{ contact.message }}</div>
+      </div>
+
+      <p>We appreciate your time and interest.</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      &copy; {% now "Y" %} Planteer. All rights reserved.
+    </div>
+
+  </div>
+
+</body>
+</html>

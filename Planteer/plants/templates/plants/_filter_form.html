@@ -16,10 +16,10 @@
     <label for="category">Category:</label>
     <div class="relative">
       <select name="category" id="category" class="filter_select">
-          <option>All Categories</option>
-          {% for cat, label in categories %}
+        <option value="">All Categories</option>
+        {% for cat, label in categories %}
           <option value="{{ cat }}" {% if request.GET.category == cat %}selected{% endif %}>{{ label }}</option>
-          {% endfor %}
+        {% endfor %}
       </select>
   
       <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"
@@ -53,7 +53,7 @@
   
     {% for country in countries %}
       <label class="flex items-center gap-2">
-        <input type="checkbox" name="native_countries" value="{{ country.id }}"
+        <input type="checkbox" name="native_countries[]" value="{{ country.id }}"
           {% if country.id|stringformat:"s" in selected_countries %}checked{% endif %}>
         {{ country.name }}
       </label>
